@@ -1,5 +1,6 @@
 
-image ?= opencl_$(USER)
+#image ?= opencl_$(USER)
+image ?= opencl_bionic
 IMAGE ?= $(image)
 
 # Intel OpenCL 2.0
@@ -16,9 +17,9 @@ INTEL_DRIVER_URL=http://registrationcenter-download.intel.com/akdlm/irc_nas/9019
 
 # AMDGPU-PRO
 # TODO: this should be replaced by the ROCm drivers...
-#AMD_DRIVER = amdgpu-pro-17.40-492261.tar.xz
-AMD_DRIVER=amdgpu-pro-18.10-572953.tar.xz
-AMD_DRIVER_URL=https://www2.ati.com/drivers/linux/ubuntu
+AMD_DRIVER = amdgpu-pro-18.40-697810-ubuntu-18.04.tar.xz
+#AMD_DRIVER=amdgpu-pro-18.10-572953.tar.xz
+AMD_DRIVER_URL=https://drivers.amd.com/drivers/linux/
 
 # Specify the type of gpu (amd, nvidia, intel).
 # This defines the run options needed for the docker container to access the
@@ -28,10 +29,10 @@ AMD_DRIVER_URL=https://www2.ati.com/drivers/linux/ubuntu
 # Note: Intel beignet gets confused by multiple cards... may need relabel
 # the card and renderer as shown in the comment below.  This option can be
 # specified using RUN_OPTS="..." on the call to Make.
-NVIDIA_OPTS = --runtime=nvidia
-#AMD_OPTS = --device=/dev/kfd --device=/dev/dri --group-add video
-AMD_OPTS = --device=/dev/dri
-INTEL_OPTS = --device=/dev/dri
+#NVIDIA_OPTS = --runtime=nvidia
+AMD_OPTS = --device=/dev/kfd --device=/dev/dri --group-add video
+#AMD_OPTS = --device=/dev/dri
+#INTEL_OPTS = --device=/dev/dri
 #INTEL_OPTS = --device=/dev/dri/card1:/dev/dri/card0 --device=/dev/dri/renderD129:/dev/dri/renderD128
 gpu ?= none
 ifeq ($(gpu), amd)

@@ -1,5 +1,5 @@
 # Using the latest long-term-support Ubuntu OS
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 RUN apt-get update && apt-get install -y \
     apt-utils \
@@ -7,7 +7,6 @@ RUN apt-get update && apt-get install -y \
     tar \
     curl \
     xz-utils \
-    alien \
     clinfo \
     ;
 
@@ -24,23 +23,23 @@ WORKDIR /tmp/opencl-driver-intel
 #COPY $INTEL_DRIVER /tmp/opencl-driver-intel/$INTEL_DRIVER
 #RUN curl -O $INTEL_DRIVER_URL/$INTEL_DRIVER 
 # SRB 5 uses a zip file; older drivers use .tgz
-RUN echo INTEL_DRIVER is $INTEL_DRIVER; \
-    curl -O $INTEL_DRIVER_URL/$INTEL_DRIVER; \
-    if echo $INTEL_DRIVER | grep -q "[.]zip$"; then \
-        unzip $INTEL_DRIVER; \
-        mkdir fakeroot; \
-        for f in intel-opencl-*.tar.xz; do tar -C fakeroot -Jxvf $f; done; \
-        cp -R fakeroot/* /; \
-        ldconfig; \
-    else \
-        tar -xzf $INTEL_DRIVER; \
-        for i in $(basename $INTEL_DRIVER .tgz)/rpm/*.rpm; do alien --to-deb $i; done; \
-        dpkg -i *.deb; \
-        rm -rf $INTEL_DRIVER $(basename $INTEL_DRIVER .tgz) *.deb; \
-        mkdir -p /etc/OpenCL/vendors; \
-        echo /opt/intel/*/lib64/libintelocl.so > /etc/OpenCL/vendors/intel.icd; \
-    fi; \
-    rm -rf /tmp/opencl-driver-intel;
+#RUN echo INTEL_DRIVER is $INTEL_DRIVER; \
+#    curl -O $INTEL_DRIVER_URL/$INTEL_DRIVER; \
+#    if echo $INTEL_DRIVER | grep -q "[.]zip$"; then \
+#        unzip $INTEL_DRIVER; \
+#        mkdir fakeroot; \
+#        for f in intel-opencl-*.tar.xz; do tar -C fakeroot -Jxvf $f; done; \
+#        cp -R fakeroot/* /; \
+#        ldconfig; \
+#    else \
+#        tar -xzf $INTEL_DRIVER; \
+#        for i in $(basename $INTEL_DRIVER .tgz)/rpm/*.rpm; do alien --to-deb $i; done; \
+#        dpkg -i *.deb; \
+#        rm -rf $INTEL_DRIVER $(basename $INTEL_DRIVER .tgz) *.deb; \
+#        mkdir -p /etc/OpenCL/vendors; \
+#        echo /opt/intel/*/lib64/libintelocl.so > /etc/OpenCL/vendors/intel.icd; \
+#    fi; \
+#    rm -rf /tmp/opencl-driver-intel;
 
 # For an intel GPU you can use apt-get to install the beignet-opencl-icd driver.  
 # To see the HD device you also need to add "--device=/dev/dri" to the docker 
@@ -87,10 +86,10 @@ RUN echo AMD_DRIVER is $AMD_DRIVER; \
 # These are also hosted on docker hub and can be used as the base container:
 #   https://hub.docker.com/r/nvidia/opencl/
 # Docker run command needs "--runtime=nvidia"
-RUN mkdir -p /etc/OpenCL/vendors && \
-    echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd
-ENV NVIDIA_VISIBLE_DEVICES all
-ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
+#RUN mkdir -p /etc/OpenCL/vendors && \
+#    echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd
+#ENV NVIDIA_VISIBLE_DEVICES all
+#ENV NVIDIA_DRIVER_CAPABILITIES compute,utility
 
 RUN rm -f /etc/OpenCL/vendors/mesa.icd
 
